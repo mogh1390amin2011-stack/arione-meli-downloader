@@ -193,7 +193,7 @@ jobs:
 
       # ───────── Step 5: Upload Artifact ─────────
       - name: 📤 Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.2.0
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.ARTIFACT_PATH }}
