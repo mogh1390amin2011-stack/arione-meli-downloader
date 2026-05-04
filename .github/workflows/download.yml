@@ -12,7 +12,7 @@ on:
         required: false
         type: string
       split_enabled:
-        description: "Enable split for files larger than 100MB"
+        description: "Enable split ZIP for files larger than 100MB"
         required: true
         default: "true"
         type: choice
@@ -35,7 +35,7 @@ jobs:
     env:
       DOWNLOAD_DIR: download-temp
       MAX_DIRECT_BYTES: 104857600
-      PART_SIZE: 90M
+      ZIP_PART_SIZE: 90m
       INPUT_URL: ${{ inputs.file_url }}
       INPUT_OUTPUT_NAME: ${{ inputs.output_name }}
       SPLIT_ENABLED: ${{ inputs.split_enabled }}
@@ -53,7 +53,9 @@ jobs:
           sudo apt-get install -y aria2 zip
 
       - name: Prepare download directory and cleanup old files
+        shell: bash
         run: |
+          set -euo pipefail
           mkdir -p "$DOWNLOAD_DIR"
           find "$DOWNLOAD_DIR" -type f -mtime +2 -delete
 
@@ -90,8 +92,10 @@ jobs:
             FINAL_NAME="${BASE}-${TS}.${EXT}"
           fi
 
+          ZIP_NAME="${FINAL_NAME}.zip"
+
           echo "safe_name=$FINAL_NAME" >> "$GITHUB_OUTPUT"
-          echo "base_name=${FINAL_NAME%.*}" >> "$GITHUB_OUTPUT"
+          echo "zip_name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Download file with aria2
         shell: bash
@@ -119,7 +123,7 @@ jobs:
 
           FILE="work/${{ steps.meta.outputs.safe_name }}"
           FINAL_NAME="${{ steps.meta.outputs.safe_name }}"
-          BASE_NAME="${{ steps.meta.outputs.base_name }}"
+          ZIP_NAME="${{ steps.meta.outputs.zip_name }}"
 
           if [ ! -f "$FILE" ]; then
             echo "Downloaded file not found"
@@ -127,46 +131,82 @@ jobs:
           fi
 
           SIZE="$(stat -c%s "$FILE")"
-
           echo "Downloaded size: $SIZE bytes"
 
           if [ "$SIZE" -le "$MAX_DIRECT_BYTES" ]; then
             mv "$FILE" "$DOWNLOAD_DIR/$FINAL_NAME"
-            echo "mode=direct" >> "$GITHUB_OUTPUT"
-            echo "final_file=$FINAL_NAME" >> "$GITHUB_OUTPUT"
-            echo "final_kind=file" >> "$GITHUB_OUTPUT"
-          else
-            if [ "$SPLIT_ENABLED" != "true" ]; then
-              echo "File is larger than 100MB and split is disabled."
-              exit 1
-            fi
 
-            PART_PREFIX="$DOWNLOAD_DIR/${FINAL_NAME}.part-"
-
-            split -b "$PART_SIZE" -d --additional-suffix=.part "$FILE" "$PART_PREFIX"
-
-            rm -f "$FILE"
-
-            PART_COUNT="$(find "$DOWNLOAD_DIR" -maxdepth 1 -type f -name "${FINAL_NAME}.part-*.part" | wc -l | tr -d ' ')"
-
-            cat > "$DOWNLOAD_DIR/${FINAL_NAME}.manifest.json" <<EOF
+            cat > "$DOWNLOAD_DIR/${FINAL_NAME}.info.json" <<EOF
           {
             "name": "$FINAL_NAME",
-            "type": "split",
-            "partSize": "$PART_SIZE",
-            "partCount": $PART_COUNT,
-            "originalSize": $SIZE,
+            "type": "direct",
+            "size": $SIZE,
             "createdAt": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-            "rebuild": "cat ${FINAL_NAME}.part-*.part > ${FINAL_NAME}"
+            "download": "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}/$DOWNLOAD_DIR/$FINAL_NAME"
           }
           EOF
 
-            echo "mode=split" >> "$GITHUB_OUTPUT"
-            echo "final_file=${FINAL_NAME}.manifest.json" >> "$GITHUB_OUTPUT"
-            echo "final_kind=manifest" >> "$GITHUB_OUTPUT"
+            echo "mode=direct" >> "$GITHUB_OUTPUT"
+            echo "final_file=$FINAL_NAME" >> "$GITHUB_OUTPUT"
+            echo "zip_file=" >> "$GITHUB_OUTPUT"
+          else
+            if [ "$SPLIT_ENABLED" != "true" ]; then
+              echo "File is larger than 100MB and split ZIP is disabled."
+              exit 1
+            fi
+
+            mkdir -p zipwork
+            mv "$FILE" "zipwork/$FINAL_NAME"
+
+            cd zipwork
+
+            zip -0 -s "$ZIP_PART_SIZE" "../$DOWNLOAD_DIR/$ZIP_NAME" "$FINAL_NAME"
+
+            cd ..
+
+            rm -rf zipwork
+
+            ZIP_TOTAL_PARTS="$(find "$DOWNLOAD_DIR" -maxdepth 1 -type f $ -name "${ZIP_NAME}" -o -name "${ZIP_NAME%.*}.z[0-9][0-9]" -o -name "${ZIP_NAME}.z[0-9][0-9]" $ | wc -l | tr -d ' ')"
+
+            cat > "$DOWNLOAD_DIR/${ZIP_NAME}.manifest.json" <<EOF
+          {
+            "name": "$ZIP_NAME",
+            "originalName": "$FINAL_NAME",
+            "type": "split-zip",
+            "partSize": "$ZIP_PART_SIZE",
+            "partCount": $ZIP_TOTAL_PARTS,
+            "originalSize": $SIZE,
+            "createdAt": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "usage": "Download all .z01/.z02/... parts and the .zip file into the same folder, then open the .zip file with WinRAR or 7-Zip.",
+            "mainZip": "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}/$DOWNLOAD_DIR/$ZIP_NAME"
+          }
+          EOF
+
+            echo "mode=splitzip" >> "$GITHUB_OUTPUT"
+            echo "final_file=${ZIP_NAME}.manifest.json" >> "$GITHUB_OUTPUT"
+            echo "zip_file=$ZIP_NAME" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit direct/small files and cleanup changes
+      - name: Validate no file exceeds GitHub 100MB limit
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TOO_BIG=0
+
+          while IFS= read -r -d '' f; do
+            SIZE="$(stat -c%s "$f")"
+            if [ "$SIZE" -gt "$MAX_DIRECT_BYTES" ]; then
+              echo "ERROR: File exceeds GitHub 100MB limit: $f ($SIZE bytes)"
+              TOO_BIG=1
+            fi
+          done < <(find "$DOWNLOAD_DIR" -type f -print0)
+
+          if [ "$TOO_BIG" = "1" ]; then
+            exit 1
+          fi
+
+      - name: Commit direct file
         if: steps.process.outputs.mode == 'direct'
         shell: bash
         run: |
@@ -196,8 +236,8 @@ jobs:
           echo "Push failed after 3 retries."
           exit 1
 
-      - name: Commit split files in safe batches
-        if: steps.process.outputs.mode == 'split'
+      - name: Commit split ZIP files in safe batches
+        if: steps.process.outputs.mode == 'splitzip'
         shell: bash
         run: |
           set -euo pipefail
@@ -205,44 +245,39 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          FINAL_NAME="${{ steps.meta.outputs.safe_name }}"
+          ZIP_NAME="${{ steps.process.outputs.zip_file }}"
 
-          git add "$DOWNLOAD_DIR/${FINAL_NAME}.manifest.json"
+          mapfile -t FILES < <(
+            find "$DOWNLOAD_DIR" -maxdepth 1 -type f \
+              $ -name "${ZIP_NAME}.manifest.json" -o -name "${ZIP_NAME}" -o -name "${ZIP_NAME%.*}.z[0-9][0-9]" -o -name "${ZIP_NAME}.z[0-9][0-9]" $ \
+              | sort
+          )
 
-          if ! git diff --cached --quiet; then
-            git commit -m "Download manifest: $FINAL_NAME"
-
-            for i in 1 2 3; do
-              if git push; then
-                break
-              fi
-
-              git pull --rebase origin "${GITHUB_REF_NAME}"
-              sleep $((i * 3))
-
-              if [ "$i" = "3" ]; then
-                echo "Push failed after 3 retries."
-                exit 1
-              fi
-            done
+          if [ "${#FILES[@]}" -eq 0 ]; then
+            echo "No split ZIP files found."
+            exit 1
           fi
-
-          mapfile -t PARTS < <(find "$DOWNLOAD_DIR" -maxdepth 1 -type f -name "${FINAL_NAME}.part-*.part" | sort)
 
           BATCH=0
 
-          for PART in "${PARTS[@]}"; do
-            SIZE="$(stat -c%s "$PART")"
+          for FILE in "${FILES[@]}"; do
+            SIZE="$(stat -c%s "$FILE")"
 
             if [ "$SIZE" -gt "$MAX_DIRECT_BYTES" ]; then
-              echo "Part is larger than 100MB: $PART"
+              echo "ERROR: File exceeds 100MB: $FILE"
               exit 1
             fi
 
             BATCH=$((BATCH + 1))
 
-            git add "$PART"
-            git commit -m "Download part $BATCH: $FINAL_NAME"
+            git add "$FILE"
+
+            if git diff --cached --quiet; then
+              echo "No staged change for $FILE"
+              continue
+            fi
+
+            git commit -m "Download split ZIP part $BATCH: $ZIP_NAME"
 
             for i in 1 2 3; do
               if git push; then
@@ -273,16 +308,29 @@ jobs:
           echo ""
 
           if [ "${{ steps.process.outputs.mode }}" = "direct" ]; then
-            echo "Final raw URL:"
+            echo "Final direct file:"
             echo "https://raw.githubusercontent.com/${REPO}/${BRANCH}/download-temp/${{ steps.process.outputs.final_file }}"
           else
-            echo "File was split because it is larger than 100MB."
-            echo "Manifest raw URL:"
-            echo "https://raw.githubusercontent.com/${REPO}/${BRANCH}/download-temp/${{ steps.process.outputs.final_file }}"
+            ZIP_NAME="${{ steps.process.outputs.zip_file }}"
+
+            echo "Split ZIP created."
             echo ""
-            echo "Parts:"
-            find "$DOWNLOAD_DIR" -maxdepth 1 -type f -name "${{ steps.meta.outputs.safe_name }}.part-*.part" | sort | while read -r f; do
-              b="$(basename "$f")"
-              echo "https://raw.githubusercontent.com/${REPO}/${BRANCH}/download-temp/${b}"
-            done
+            echo "Main ZIP file:"
+            echo "https://raw.githubusercontent.com/${REPO}/${BRANCH}/download-temp/${ZIP_NAME}"
+            echo ""
+            echo "Manifest:"
+            echo "https://raw.githubusercontent.com/${REPO}/${BRANCH}/download-temp/${ZIP_NAME}.manifest.json"
+            echo ""
+            echo "All required parts:"
+            find "$DOWNLOAD_DIR" -maxdepth 1 -type f \
+              $ -name "${ZIP_NAME}" -o -name "${ZIP_NAME%.*}.z[0-9][0-9]" -o -name "${ZIP_NAME}.z[0-9][0-9]" $ \
+              | sort \
+              | while read -r f; do
+                  b="$(basename "$f")"
+                  echo "https://raw.githubusercontent.com/${REPO}/${BRANCH}/download-temp/${b}"
+                done
+
+            echo ""
+            echo "Usage:"
+            echo "Download all .z01/.z02/... files and the .zip file into one folder, then open the .zip file with WinRAR or 7-Zip."
           fi
