@@ -3,619 +3,1538 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دانلودر حرفه‌ای گیت‌هاب | Fluent Design</title>
+    <title>دانلودر گیت‌هاب</title>
     <style>
-        /* Microsoft Fluent Design System - Acrylic Material */
-        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap');
-        
-        * {
+        /* ===== FONTS ===== */
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+
+        /* ===== CSS VARIABLES ===== */
+        :root {
+            --bg-primary: #f5f5f5;
+            --bg-card: rgba(255, 255, 255, 0.72);
+            --bg-card-hover: rgba(255, 255, 255, 0.85);
+            --bg-acrylic: rgba(255, 255, 255, 0.65);
+            --border-color: rgba(0, 0, 0, 0.06);
+            --border-focus: #0078d4;
+            --text-primary: #1a1a1a;
+            --text-secondary: #616161;
+            --text-tertiary: #9e9e9e;
+            --accent: #0078d4;
+            --accent-hover: #106ebe;
+            --accent-light: rgba(0, 120, 212, 0.08);
+            --success: #107c10;
+            --success-bg: rgba(16, 124, 16, 0.08);
+            --error: #d13438;
+            --error-bg: rgba(209, 52, 56, 0.08);
+            --warning: #ca5010;
+            --warning-bg: rgba(202, 80, 16, 0.08);
+            --info: #0078d4;
+            --info-bg: rgba(0, 120, 212, 0.08);
+            --shadow-2: 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-4: 0 2px 4px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-8: 0 4px 8px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-16: 0 8px 16px rgba(0,0,0,0.06), 0 4px 8px rgba(0,0,0,0.04);
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1c1c1c;
+            --bg-card: rgba(44, 44, 44, 0.72);
+            --bg-card-hover: rgba(44, 44, 44, 0.85);
+            --bg-acrylic: rgba(44, 44, 44, 0.65);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-focus: #4cc2ff;
+            --text-primary: #ffffff;
+            --text-secondary: #c8c8c8;
+            --text-tertiary: #8a8a8a;
+            --accent: #4cc2ff;
+            --accent-hover: #62cdff;
+            --accent-light: rgba(76, 194, 255, 0.1);
+            --success: #6ccb5f;
+            --success-bg: rgba(108, 203, 95, 0.1);
+            --error: #ff99a4;
+            --error-bg: rgba(255, 153, 164, 0.1);
+            --warning: #fce100;
+            --warning-bg: rgba(252, 225, 0, 0.1);
+            --info: #4cc2ff;
+            --info-bg: rgba(76, 194, 255, 0.1);
+            --shadow-2: 0 1px 2px rgba(0,0,0,0.2);
+            --shadow-4: 0 2px 4px rgba(0,0,0,0.14), 0 1px 2px rgba(0,0,0,0.2);
+            --shadow-8: 0 4px 8px rgba(0,0,0,0.14), 0 2px 4px rgba(0,0,0,0.2);
+            --shadow-16: 0 8px 16px rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.14);
+        }
+
+        /* ===== RESET ===== */
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
+        /* ===== BODY ===== */
         body {
-            font-family: 'Segoe UI', 'Segoe UI Variable', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cGF0aCBmaWxsPSIjZjBmMGYwIiBmaWxsLW9wYWNpdHk9IjAuMSIgZD0iTTAgMGg0MHY0MEgweiIvPjwvc3ZnPg==');
-            background-attachment: fixed;
+            font-family: 'Vazirmatn', 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px;
+            transition: var(--transition);
+            position: relative;
+            overflow-x: hidden;
         }
-        
-        /* Acrylic backdrop effect */
-        .acrylic-card {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 32px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5);
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -30%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0,120,212,0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
         }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -40%;
+            left: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(16,124,16,0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
         }
-        
-        /* Header with Fluent gradient */
-        .header {
-            padding: 2.5rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .header h1 {
-            font-size: 2.2rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4a 50%, #1a1a2e 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 0.5rem;
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 100;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--bg-acrylic);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            font-size: 18px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-4);
         }
-        
-        .header .badge {
-            background: rgba(0, 120, 212, 0.15);
-            padding: 4px 12px;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: #0078d4;
-            display: inline-block;
+
+        .theme-toggle:hover {
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-8);
+            transform: scale(1.05);
         }
-        
-        .content {
-            padding: 2.5rem;
-        }
-        
-        /* Fluent Input Fields */
-        .fluent-input-group {
-            margin-bottom: 1.75rem;
-        }
-        
-        .fluent-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            font-size: 0.85rem;
-            color: #1a1a2e;
-            letter-spacing: -0.2px;
-        }
-        
-        .fluent-label i {
-            margin-left: 6px;
-        }
-        
-        .fluent-textarea, .fluent-input, .fluent-select {
+
+        /* ===== CONTAINER ===== */
+        .container {
             width: 100%;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
+            max-width: 640px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, var(--accent), #50e6ff);
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 16px rgba(0,120,212,0.2);
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
             font-size: 14px;
-            font-family: 'Segoe UI', monospace;
-            transition: all 0.2s ease;
-            resize: vertical;
+            font-weight: 400;
         }
-        
-        .fluent-textarea:focus, .fluent-input:focus, .fluent-select:focus {
-            outline: none;
-            border-color: #0078d4;
-            box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
-            background: white;
+
+        /* ===== CARD ===== */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-4);
+            transition: var(--transition);
         }
-        
-        .fluent-textarea {
-            min-height: 120px;
-            font-family: 'Consolas', monospace;
+
+        .card:hover {
+            box-shadow: var(--shadow-8);
         }
-        
-        /* Fluent Buttons */
-        .fluent-btn {
-            padding: 12px 28px;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
             align-items: center;
             gap: 10px;
-            justify-content: center;
         }
-        
-        .fluent-btn-primary {
-            background: #0078d4;
-            color: white;
-            box-shadow: 0 2px 4px rgba(0, 120, 212, 0.2);
-        }
-        
-        .fluent-btn-primary:hover {
-            background: #106ebe;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
-        }
-        
-        .fluent-btn-secondary {
-            background: rgba(0, 0, 0, 0.05);
-            color: #1a1a2e;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
-        .fluent-btn-secondary:hover {
-            background: rgba(0, 0, 0, 0.1);
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-        }
-        
-        /* Status Card */
-        .status-card {
-            margin-top: 24px;
-            padding: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .status-card.hidden {
-            display: none;
-        }
-        
-        .status-header {
-            padding: 16px 20px;
-            background: rgba(0, 0, 0, 0.02);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+        .card-title .icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
+            font-size: 16px;
         }
-        
-        .status-icon {
-            width: 24px;
-            height: 24px;
+
+        .card-title .icon.blue { background: var(--accent-light); }
+        .card-title .icon.green { background: var(--success-bg); }
+        .card-title .icon.orange { background: var(--warning-bg); }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-hint {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 40px;
+            padding: 0 14px;
+            font-family: inherit;
+            font-size: 13.5px;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: var(--transition);
+            direction: ltr;
+            text-align: left;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-tertiary);
+            font-size: 12.5px;
+        }
+
+        .form-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 1px var(--border-focus);
+            background: var(--bg-card);
+        }
+
+        .form-input:hover:not(:focus) {
+            border-color: var(--text-tertiary);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .input-icon:hover {
+            color: var(--text-secondary);
+        }
+
+        .form-input.has-icon {
+            padding-left: 38px;
+        }
+
+        /* ===== FILENAME INPUT ===== */
+        .filename-group {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .filename-group .form-group {
+            flex: 1;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        /* ===== BUTTON ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 40px;
+            padding: 0 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            width: 100%;
+            height: 44px;
+            background: var(--accent);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            box-shadow: 0 1px 4px rgba(0,120,212,0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--accent-hover);
+            box-shadow: 0 2px 8px rgba(0,120,212,0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0,120,212,0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #ffffff;
+            box-shadow: 0 1px 4px rgba(16,124,16,0.3);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 2px 8px rgba(16,124,16,0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent-light);
+        }
+
+        /* ===== STATUS AREA ===== */
+        .status-area {
+            display: none;
+        }
+
+        .status-area.visible {
+            display: block;
+        }
+
+        /* ===== STATUS STEPS ===== */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 0;
+            position: relative;
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 15px;
+            top: 44px;
+            bottom: -2px;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .step.active:not(:last-child)::after {
+            background: var(--accent);
+        }
+
+        .step.done:not(:last-child)::after {
+            background: var(--success);
+        }
+
+        .step-icon {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            color: var(--text-tertiary);
+            transition: var(--transition);
+            z-index: 1;
         }
-        
-        .status-icon.loading {
-            background: #ffb900;
-            animation: pulse 1s ease-in-out infinite;
+
+        .step.active .step-icon {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light);
         }
-        
-        .status-icon.success {
-            background: #13a10e;
+
+        .step.done .step-icon {
+            border-color: var(--success);
+            color: #fff;
+            background: var(--success);
         }
-        
-        .status-icon.error {
-            background: #d13438;
+
+        .step.error .step-icon {
+            border-color: var(--error);
+            color: #fff;
+            background: var(--error);
         }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.9); }
+
+        .step-content {
+            flex: 1;
+            padding-top: 4px;
         }
-        
-        .status-body {
-            padding: 20px;
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
         }
-        
+
+        .step-desc {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        /* ===== SPINNER ===== */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--accent-light);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .step.active .step-icon .spinner {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ===== PROGRESS BAR ===== */
         .progress-container {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 20px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .progress-container.visible {
+            display: block;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
             height: 6px;
+            background: var(--bg-primary);
+            border-radius: 3px;
             overflow: hidden;
-            margin-top: 12px;
         }
-        
-        .progress-fill {
-            background: linear-gradient(90deg, #0078d4, #00b7c3);
+
+        .progress-bar-fill {
             height: 100%;
+            background: linear-gradient(90deg, var(--accent), #50e6ff);
+            border-radius: 3px;
+            transition: width 0.5s ease;
             width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 20px;
         }
-        
-        /* Result card */
-        .result-card {
-            margin-top: 20px;
-            background: linear-gradient(135deg, rgba(0, 120, 212, 0.08), rgba(0, 120, 212, 0.02));
-            border: 1px solid rgba(0, 120, 212, 0.2);
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+            font-size: 11px;
+            color: var(--text-tertiary);
         }
-        
+
+        /* ===== RESULT ===== */
+        .result-area {
+            display: none;
+        }
+
+        .result-area.visible {
+            display: block;
+        }
+
+        .result-box {
+            background: var(--success-bg);
+            border: 1px solid rgba(16,124,16,0.15);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .result-box .result-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .result-box .result-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 4px;
+        }
+
+        .result-box .result-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .result-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
         .result-link {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: white;
-            border-radius: 12px;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 13px;
             text-decoration: none;
-            color: #0078d4;
-            font-weight: 500;
-            transition: all 0.2s;
+            color: var(--text-primary);
+            transition: var(--transition);
         }
-        
+
         .result-link:hover {
-            background: #f0f6ff;
-            transform: translateX(-5px);
+            background: var(--bg-card-hover);
+            border-color: var(--accent);
         }
-        
-        /* Info box */
-        .info-box {
-            margin-top: 24px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.02);
-            border-radius: 20px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+
+        .result-link .link-name {
+            font-weight: 500;
         }
-        
-        .info-title {
+
+        .result-link .link-icon {
+            color: var(--accent);
+        }
+
+        /* ===== ERROR BOX ===== */
+        .error-box {
+            background: var(--error-bg);
+            border: 1px solid rgba(209,52,56,0.15);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: none;
+        }
+
+        .error-box.visible {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .error-box .error-icon {
+            font-size: 20px;
+            min-width: 24px;
+        }
+
+        .error-box .error-content {
+            flex: 1;
+        }
+
+        .error-box .error-title {
+            font-size: 14px;
             font-weight: 600;
-            margin-bottom: 12px;
-            color: #1a1a2e;
+            color: var(--error);
+            margin-bottom: 2px;
         }
-        
-        .info-text {
-            font-size: 0.85rem;
-            color: #666;
-            line-height: 1.6;
+
+        .error-box .error-message {
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            word-break: break-word;
         }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            body { padding: 1rem; }
-            .header { padding: 1.5rem; }
-            .content { padding: 1.5rem; }
-            .header h1 { font-size: 1.5rem; }
-            .button-group { flex-direction: column; }
+
+        /* ===== LOG ===== */
+        .log-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            margin-top: 12px;
+            user-select: none;
+            transition: var(--transition);
+        }
+
+        .log-toggle:hover {
+            color: var(--text-secondary);
+        }
+
+        .log-area {
+            margin-top: 8px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .log-area.expanded {
+            max-height: 300px;
+        }
+
+        .log-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: var(--radius-md);
+            padding: 12px;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 11.5px;
+            line-height: 1.7;
+            max-height: 250px;
+            overflow-y: auto;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .log-box .log-entry {
+            display: block;
+        }
+
+        .log-box .log-time {
+            color: #6a9955;
+        }
+
+        .log-box .log-info { color: #4fc1ff; }
+        .log-box .log-success { color: #6a9955; }
+        .log-box .log-error { color: #f44747; }
+        .log-box .log-warn { color: #ce9178; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-tertiary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 12px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .filename-group {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+
+        /* ===== TOOLTIP ===== */
+        .info-tip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 10px;
+            font-weight: 700;
+            cursor: help;
+            margin-right: 4px;
+            position: relative;
+        }
+
+        .info-tip:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 6px);
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            font-size: 11px;
+            font-weight: 400;
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            white-space: nowrap;
+            z-index: 10;
+            box-shadow: var(--shadow-8);
+        }
+
+        /* ===== BADGE ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 20px;
+        }
+
+        .badge-info {
+            background: var(--info-bg);
+            color: var(--info);
+        }
+
+        .badge-success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: var(--warning-bg);
+            color: var(--warning);
         }
     </style>
 </head>
 <body>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" title="تغییر تم">🌙</button>
+
     <div class="container">
-        <div class="acrylic-card">
-            <div class="header">
-                <h1>
-                    <span>📥</span>
-                    GitHub Downloader Pro
-                    <span>⚡</span>
-                </h1>
-                <div class="badge">Microsoft Fluent Design</div>
-                <p style="margin-top: 12px; color: #666; font-size: 0.9rem;">دانلود خودکار فایل‌ها و ذخیره در مخزن گیت‌هاب</p>
+        <!-- Header -->
+        <div class="header">
+            <div class="header-icon">⬇️</div>
+            <h1>دانلودر گیت‌هاب</h1>
+            <p>دانلود فایل از هر لینکی با استفاده از GitHub Actions</p>
+        </div>
+
+        <!-- Settings Card -->
+        <div class="card">
+            <div class="card-title">
+                <span class="icon blue">⚙️</span>
+                تنظیمات اتصال
             </div>
-            
-            <div class="content">
-                <div class="fluent-input-group">
-                    <label class="fluent-label">
-                        <i>🔗</i> لینک‌های مستقیم فایل‌ها
-                    </label>
-                    <textarea id="urls" class="fluent-textarea" placeholder="https://example.com/file1.zip&#10;https://example.com/file2.mp4"></textarea>
-                    <small style="color: #666; margin-top: 6px; display: block;">🔹 هر لینک در یک خط - 🔹 با کاما یا فاصله هم می‌توانید جدا کنید</small>
+
+            <div class="form-group">
+                <label class="form-label">
+                    توکن گیت‌هاب
+                    <span class="info-tip" data-tip="توکن با دسترسی repo و workflow">?</span>
+                </label>
+                <div class="input-wrapper">
+                    <input
+                        type="password"
+                        id="githubToken"
+                        class="form-input has-icon"
+                        placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                        autocomplete="off"
+                    >
+                    <span class="input-icon" onclick="toggleTokenVisibility()" title="نمایش/مخفی">👁️</span>
                 </div>
-                
-                <div class="fluent-input-group">
-                    <label class="fluent-label">
-                        <i>📁</i> نام مخزن گیت‌هاب
-                    </label>
-                    <input type="text" id="repo" class="fluent-input" placeholder="username/repository-name">
+                <div class="form-hint">توکن در مرورگر شما ذخیره می‌شود</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    نام مخزن
+                    <span class="info-tip" data-tip="فرمت: username/repo-name">?</span>
+                </label>
+                <input
+                    type="text"
+                    id="repoName"
+                    class="form-input"
+                    placeholder="username/my-downloads"
+                    dir="ltr"
+                >
+                <div class="form-hint">مخزن باید فایل workflow را داشته باشد</div>
+            </div>
+        </div>
+
+        <!-- Download Card -->
+        <div class="card">
+            <div class="card-title">
+                <span class="icon green">📥</span>
+                دانلود فایل
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">لینک مستقیم فایل</label>
+                <input
+                    type="url"
+                    id="fileUrl"
+                    class="form-input"
+                    placeholder="https://example.com/file.zip"
+                    dir="ltr"
+                >
+                <div class="form-hint">لینک باید مستقیم باشد. برای تلگرام از ربات استفاده کنید</div>
+            </div>
+
+            <div class="filename-group">
+                <div class="form-group">
+                    <label class="form-label">نام فایل خروجی (اختیاری)</label>
+                    <input
+                        type="text"
+                        id="fileName"
+                        class="form-input"
+                        placeholder="my-file.zip"
+                        dir="ltr"
+                    >
                 </div>
-                
-                <div class="fluent-input-group">
-                    <label class="fluent-label">
-                        <i>⚙️</i> حالت دانلود
-                    </label>
-                    <select id="mode" class="fluent-select">
-                        <option value="auto">🤖 خودکار (تقسیم فایل‌های بالای 90MB)</option>
-                        <option value="zip-single">📦 یک فایل ZIP نهایی</option>
-                    </select>
-                </div>
-                
-                <div class="button-group">
-                    <button id="downloadBtn" class="fluent-btn fluent-btn-primary">
-                        <span>🚀</span> شروع دانلود
-                    </button>
-                    <button id="clearBtn" class="fluent-btn fluent-btn-secondary">
-                        <span>🗑️</span> پاک کردن
-                    </button>
-                </div>
-                
-                <!-- Status Card -->
-                <div id="statusCard" class="status-card hidden">
-                    <div class="status-header">
-                        <div id="statusIcon" class="status-icon"></div>
-                        <span id="statusTitle" style="font-weight: 500;">وضعیت</span>
+            </div>
+
+            <div class="checkbox-wrapper">
+                <input type="checkbox" id="splitFile" checked>
+                <label for="splitFile">تقسیم فایل‌های بزرگتر از ۹۰ مگابایت</label>
+            </div>
+
+            <button class="btn btn-primary" id="startBtn" onclick="startDownload()">
+                🚀 شروع دانلود
+            </button>
+        </div>
+
+        <!-- Status Card -->
+        <div class="card status-area" id="statusArea">
+            <div class="card-title">
+                <span class="icon orange">📊</span>
+                وضعیت عملیات
+                <span class="badge badge-info" id="statusBadge">در انتظار</span>
+            </div>
+
+            <div class="steps" id="stepsContainer">
+                <div class="step" id="step1" data-step="trigger">
+                    <div class="step-icon">1</div>
+                    <div class="step-content">
+                        <div class="step-title">ارسال درخواست</div>
+                        <div class="step-desc">ارسال لینک به GitHub Actions</div>
                     </div>
-                    <div class="status-body">
-                        <div id="statusMessage" style="color: #555; margin-bottom: 12px;"></div>
-                        <div id="progressContainer" class="progress-container">
-                            <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <div class="step" id="step2" data-step="queue">
+                    <div class="step-icon">2</div>
+                    <div class="step-content">
+                        <div class="step-title">صف اجرا</div>
+                        <div class="step-desc">در انتظار اجرای Workflow</div>
+                    </div>
+                </div>
+                <div class="step" id="step3" data-step="download">
+                    <div class="step-icon">3</div>
+                    <div class="step-content">
+                        <div class="step-title">دانلود فایل</div>
+                        <div class="step-desc">دانلود فایل در سرور گیت‌هاب</div>
+                        <div class="progress-container" id="downloadProgress">
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="progressFill"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span id="progressPercent">0%</span>
+                                <span id="progressTime">--</span>
+                            </div>
                         </div>
-                        <div id="statusDetails" style="margin-top: 12px; font-size: 0.8rem; color: #888;"></div>
                     </div>
                 </div>
-                
-                <!-- Result Card -->
-                <div id="resultCard" class="status-card hidden result-card">
-                    <div class="status-header">
-                        <div class="status-icon success"></div>
-                        <span style="font-weight: 500;">✅ دانلود با موفقیت انجام شد!</span>
+                <div class="step" id="step4" data-step="process">
+                    <div class="step-icon">4</div>
+                    <div class="step-content">
+                        <div class="step-title">پردازش و بسته‌بندی</div>
+                        <div class="step-desc">تقسیم و فشرده‌سازی فایل</div>
                     </div>
-                    <div id="resultBody" class="status-body"></div>
                 </div>
-                
-                <!-- Info Box -->
-                <div class="info-box">
-                    <div class="info-title">ℹ️ راهنمای سریع</div>
-                    <div class="info-text">
-                        <strong>مرحله 1:</strong> لینک‌های فایل‌های خود را وارد کنید<br>
-                        <strong>مرحله 2:</strong> نام مخزن گیت‌هاب خود را وارد کنید (مثال: username/repo)<br>
-                        <strong>مرحله 3:</strong> روی "شروع دانلود" کلیک کنید<br>
-                        <strong>مرحله 4:</strong> پس از اتمام، لینک دانلود مستقیم فایل نهایی به شما داده می‌شود<br><br>
-                        <strong>📦 نکته:</strong> فایل‌های بالای 90MB به صورت خودکار به قطعات تقسیم و در یک ZIP فشرده می‌شوند.
+                <div class="step" id="step5" data-step="upload">
+                    <div class="step-icon">5</div>
+                    <div class="step-content">
+                        <div class="step-title">آپلود Artifact</div>
+                        <div class="step-desc">آپلود فایل نهایی</div>
                     </div>
                 </div>
             </div>
+
+            <!-- Error Box -->
+            <div class="error-box" id="errorBox">
+                <span class="error-icon">❌</span>
+                <div class="error-content">
+                    <div class="error-title">خطا</div>
+                    <div class="error-message" id="errorMessage"></div>
+                </div>
+            </div>
+
+            <!-- Log Toggle -->
+            <div class="log-toggle" onclick="toggleLog()">
+                <span id="logArrow">◀</span>
+                نمایش لاگ‌ها
+            </div>
+            <div class="log-area" id="logArea">
+                <div class="log-box" id="logBox"></div>
+            </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="card result-area" id="resultArea">
+            <div class="result-box">
+                <div class="result-icon">🎉</div>
+                <div class="result-title">دانلود با موفقیت انجام شد!</div>
+                <div class="result-desc" id="resultDesc">فایل شما آماده دانلود است</div>
+                <div class="result-links" id="resultLinks"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            ساخته شده با ❤️ | محدودیت: فایل‌های زیر ۲ گیگابایت
         </div>
     </div>
 
     <script>
-        class FluentGitHubDownloader {
-            constructor() {
-                this.token = null;
-                this.pollingInterval = null;
-                this.init();
+        // ===== CONSTANTS =====
+        const POLL_INTERVAL = 10000; // 10 seconds
+        const API_BASE = 'https://api.github.com';
+        const WORKFLOW_FILE = 'download.yml';
+
+        // ===== STATE =====
+        let state = {
+            polling: false,
+            pollTimer: null,
+            runId: null,
+            startTime: null,
+        };
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved values from localStorage
+            const savedToken = localStorage.getItem('gh_token');
+            const savedRepo = localStorage.getItem('gh_repo');
+            const savedTheme = localStorage.getItem('gh_theme');
+
+            if (savedToken) document.getElementById('githubToken').value = savedToken;
+            if (savedRepo) document.getElementById('repoName').value = savedRepo;
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.querySelector('.theme-toggle').textContent = '☀️';
             }
-            
-            init() {
-                this.loadToken();
-                this.bindEvents();
-            }
-            
-            loadToken() {
-                this.token = localStorage.getItem('github_token');
-                if (!this.token) {
-                    setTimeout(() => this.askForToken(), 500);
-                }
-            }
-            
-            askForToken() {
-                const token = prompt(
-                    '🔐 توکن گیت‌هاب خود را وارد کنید:\n\n' +
-                    'چگونه توکن بسازم؟\n' +
-                    '1. به GitHub → Settings → Developer settings → Personal access tokens بروید\n' +
-                    '2. روی "Generate new token (classic)" کلیک کنید\n' +
-                    '3. دسترسی‌های repo و workflow را تیک بزنید\n' +
-                    '4. توکن ساخته شده را کپی و اینجا جایگذاری کنید'
-                );
-                if (token && token.startsWith('github_pat_') || token.startsWith('ghp_')) {
-                    this.token = token;
-                    localStorage.setItem('github_token', token);
-                    this.showToast('✅ توکن ذخیره شد', 'success');
-                } else if (token) {
-                    alert('❌ توکن نامعتبر! لطفاً توکن معتبر وارد کنید');
-                    this.askForToken();
-                }
-            }
-            
-            bindEvents() {
-                document.getElementById('downloadBtn').addEventListener('click', () => this.startDownload());
-                document.getElementById('clearBtn').addEventListener('click', () => this.clearForm());
-            }
-            
-            clearForm() {
-                document.getElementById('urls').value = '';
-                document.getElementById('repo').value = '';
-                this.hideStatus();
-                this.hideResult();
-            }
-            
-            showStatus(title, message, progress = 0) {
-                const card = document.getElementById('statusCard');
-                const icon = document.getElementById('statusIcon');
-                const titleEl = document.getElementById('statusTitle');
-                const msgEl = document.getElementById('statusMessage');
-                const fillEl = document.getElementById('progressFill');
-                
-                card.classList.remove('hidden');
-                icon.className = 'status-icon loading';
-                titleEl.textContent = title;
-                msgEl.textContent = message;
-                fillEl.style.width = `${progress}%`;
-            }
-            
-            updateProgress(message, progress) {
-                const msgEl = document.getElementById('statusMessage');
-                const fillEl = document.getElementById('progressFill');
-                const detailsEl = document.getElementById('statusDetails');
-                
-                if (msgEl) msgEl.textContent = message;
-                if (fillEl) fillEl.style.width = `${progress}%`;
-                if (detailsEl) detailsEl.textContent = new Date().toLocaleTimeString('fa-IR');
-            }
-            
-            hideStatus() {
-                document.getElementById('statusCard').classList.add('hidden');
-                if (this.pollingInterval) clearInterval(this.pollingInterval);
-            }
-            
-            showResult(downloadUrl, runId) {
-                const card = document.getElementById('resultCard');
-                const body = document.getElementById('resultBody');
-                
-                body.innerHTML = `
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <div style="background: white; border-radius: 12px; padding: 16px;">
-                            <div style="font-weight: 600; margin-bottom: 8px;">📥 فایل شما آماده دانلود است!</div>
-                            <a href="${downloadUrl}" target="_blank" class="result-link" style="display: flex; justify-content: space-between;">
-                                <span>🔗 دانلود فایل نهایی</span>
-                                <span>⬇️</span>
-                            </a>
-                        </div>
-                        <div style="font-size: 0.75rem; color: #888; text-align: center;">
-                            شناسه: ${runId}<br>
-                            فایل به مدت 7 روز در گیت‌هاب نگهداری می‌شود
-                        </div>
-                    </div>
-                `;
-                
-                card.classList.remove('hidden');
-                
-                // Scroll to result
-                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-            
-            hideResult() {
-                document.getElementById('resultCard').classList.add('hidden');
-            }
-            
-            async startDownload() {
-                const urlsText = document.getElementById('urls').value;
-                const repo = document.getElementById('repo').value;
-                const mode = document.getElementById('mode').value;
-                
-                if (!urlsText.trim()) {
-                    alert('❌ لطفاً حداقل یک لینک وارد کنید');
-                    return;
-                }
-                
-                if (!repo.trim()) {
-                    alert('❌ لطفاً نام مخزن گیت‌هاب را وارد کنید (مثال: username/repo)');
-                    return;
-                }
-                
-                if (!this.token) {
-                    this.askForToken();
-                    return;
-                }
-                
-                // پردازش لینک‌ها
-                let urls = urlsText.split(/\n/);
-                urls = urls.flatMap(u => u.split(/[ ,]+/));
-                urls = urls.filter(u => u.trim() && u.startsWith('http'));
-                
-                if (urls.length === 0) {
-                    alert('❌ لینک معتبری یافت نشد (لینک باید با http:// یا https:// شروع شود)');
-                    return;
-                }
-                
-                this.showStatus('🔄 در حال ارسال درخواست...', 'در حال اتصال به گیت‌هاب', 10);
-                
-                try {
-                    // Trigger workflow
-                    const workflowUrl = `https://api.github.com/repos/${repo}/actions/workflows/downloader.yml/dispatches`;
-                    
-                    const payload = {
-                        ref: 'main',
-                        inputs: {
-                            urls: urls.join(' '),
-                            mode: mode
-                        }
-                    };
-                    
-                    const response = await fetch(workflowUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${this.token}`,
-                            'Accept': 'application/vnd.github.v3+json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    if (!response.ok && response.status !== 204) {
-                        const error = await response.text();
-                        throw new Error(`خطای ${response.status}: ${error}`);
-                    }
-                    
-                    this.updateProgress('✅ درخواست ارسال شد! منتظر شروع پردازش...', 30);
-                    
-                    // منتظر ماندن و پیدا کردن run
-                    await this.waitForRun(repo, urls);
-                    
-                } catch (error) {
-                    console.error(error);
-                    this.showStatus('❌ خطا', error.message, 0);
-                    setTimeout(() => this.hideStatus(), 5000);
-                }
-            }
-            
-            async waitForRun(repo, urls) {
-                this.updateProgress('🔄 در حال بررسی وضعیت...', 50);
-                
-                let attempts = 0;
-                const maxAttempts = 30; // 30 * 10 seconds = 5 minutes
-                
-                const checkInterval = setInterval(async () => {
-                    attempts++;
-                    
-                    try {
-                        const runsUrl = `https://api.github.com/repos/${repo}/actions/runs?per_page=5`;
-                        const response = await fetch(runsUrl, {
-                            headers: { 'Authorization': `Bearer ${this.token}` }
-                        });
-                        
-                        if (!response.ok) throw new Error('خطا در دریافت وضعیت');
-                        
-                        const data = await response.json();
-                        const latestRun = data.workflow_runs?.[0];
-                        
-                        if (latestRun && latestRun.status === 'completed') {
-                            clearInterval(checkInterval);
-                            
-                            if (latestRun.conclusion === 'success') {
-                                this.updateProgress('✅ دانلود کامل شد! در حال دریافت لینک...', 90);
-                                
-                                // دریافت لینک Artifact
-                                const artifactUrl = `https://api.github.com/repos/${repo}/actions/runs/${latestRun.id}/artifacts`;
-                                const artifactRes = await fetch(artifactUrl, {
-                                    headers: { 'Authorization': `Bearer ${this.token}` }
-                                });
-                                const artifactData = await artifactRes.json();
-                                
-                                if (artifactData.artifacts && artifactData.artifacts.length > 0) {
-                                    const downloadUrl = artifactData.artifacts[0].archive_download_url;
-                                    this.updateProgress('🎉 موفقیت آمیز!', 100);
-                                    this.hideStatus();
-                                    this.showResult(downloadUrl, latestRun.id);
-                                } else {
-                                    const runPageUrl = `https://github.com/${repo}/actions/runs/${latestRun.id}`;
-                                    this.showResult(runPageUrl, latestRun.id);
-                                }
-                            } else {
-                                this.showStatus('❌ خطا در دانلود', `وضعیت: ${latestRun.conclusion}`, 0);
-                                setTimeout(() => this.hideStatus(), 5000);
-                            }
-                        } else if (latestRun && latestRun.status === 'in_progress') {
-                            this.updateProgress(`⏳ در حال دانلود... (تلاش ${attempts}/${maxAttempts})`, 50 + (attempts * 1.5));
-                        } else if (attempts >= maxAttempts) {
-                            clearInterval(checkInterval);
-                            this.showStatus('⏰ زمان انتظار تمام شد', 'لطفاً بعداً وضعیت را در بخش Actions گیت‌هاب بررسی کنید', 0);
-                        }
-                        
-                    } catch (error) {
-                        console.error('Polling error:', error);
-                    }
-                }, 10000); // هر 10 ثانیه چک کن
-                
-                this.pollingInterval = checkInterval;
-            }
-            
-            showToast(message, type) {
-                // می‌توانید یک toast ساده بسازید
-                console.log(message);
+        });
+
+        // ===== THEME =====
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn = document.querySelector('.theme-toggle');
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.removeAttribute('data-theme');
+                btn.textContent = '🌙';
+                localStorage.setItem('gh_theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                btn.textContent = '☀️';
+                localStorage.setItem('gh_theme', 'dark');
             }
         }
-        
-        // راه‌اندازی
-        const app = new FluentGitHubDownloader();
+
+        // ===== TOKEN VISIBILITY =====
+        function toggleTokenVisibility() {
+            const input = document.getElementById('githubToken');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // ===== LOGGING =====
+        function addLog(message, type = 'info') {
+            const logBox = document.getElementById('logBox');
+            const time = new Date().toLocaleTimeString('fa-IR');
+            const entry = document.createElement('span');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-${type}">${message}</span>\n`;
+            logBox.appendChild(entry);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function toggleLog() {
+            const logArea = document.getElementById('logArea');
+            const arrow = document.getElementById('logArrow');
+            logArea.classList.toggle('expanded');
+            arrow.textContent = logArea.classList.contains('expanded') ? '▼' : '◀';
+        }
+
+        // ===== STEPS =====
+        function setStep(stepNum, status) {
+            // status: 'pending', 'active', 'done', 'error'
+            const step = document.getElementById(`step${stepNum}`);
+            step.className = `step ${status}`;
+
+            const icon = step.querySelector('.step-icon');
+            if (status === 'active') {
+                icon.innerHTML = '<div class="spinner"></div>';
+            } else if (status === 'done') {
+                icon.innerHTML = '✓';
+            } else if (status === 'error') {
+                icon.innerHTML = '✕';
+            } else {
+                icon.innerHTML = stepNum;
+            }
+        }
+
+        function setBadge(text, type) {
+            const badge = document.getElementById('statusBadge');
+            badge.textContent = text;
+            badge.className = `badge badge-${type}`;
+        }
+
+        // ===== ERROR =====
+        function showError(message) {
+            const errorBox = document.getElementById('errorBox');
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.textContent = message;
+            errorBox.classList.add('visible');
+            addLog(message, 'error');
+        }
+
+        function hideError() {
+            document.getElementById('errorBox').classList.remove('visible');
+        }
+
+        // ===== API HELPERS =====
+        function getHeaders() {
+            const token = document.getElementById('githubToken').value.trim();
+            return {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json',
+            };
+        }
+
+        function getRepo() {
+            return document.getElementById('repoName').value.trim();
+        }
+
+        // ===== VALIDATION =====
+        function validate() {
+            const token = document.getElementById('githubToken').value.trim();
+            const repo = document.getElementById('repoName').value.trim();
+            const url = document.getElementById('fileUrl').value.trim();
+
+            if (!token) {
+                showError('لطفاً توکن گیت‌هاب را وارد کنید');
+                return false;
+            }
+
+            if (!repo || !repo.includes('/')) {
+                showError('نام مخزن باید به فرمت username/repo باشد');
+                return false;
+            }
+
+            if (!url) {
+                showError('لطفاً لینک فایل را وارد کنید');
+                return false;
+            }
+
+            try {
+                new URL(url);
+            } catch {
+                showError('لینک وارد شده معتبر نیست');
+                return false;
+            }
+
+            return true;
+        }
+
+        // ===== SAVE TO LOCALSTORAGE =====
+        function saveSettings() {
+            const token = document.getElementById('githubToken').value.trim();
+            const repo = document.getElementById('repoName').value.trim();
+            localStorage.setItem('gh_token', token);
+            localStorage.setItem('gh_repo', repo);
+        }
+
+        // ===== MAIN: START DOWNLOAD =====
+        async function startDownload() {
+            hideError();
+
+            if (!validate()) return;
+
+            saveSettings();
+
+            const fileUrl = document.getElementById('fileUrl').value.trim();
+            const fileName = document.getElementById('fileName').value.trim();
+            const splitFile = document.getElementById('splitFile').checked;
+            const repo = getRepo();
+            const btn = document.getElementById('startBtn');
+
+            // Reset UI
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> در حال ارسال...';
+            document.getElementById('statusArea').classList.add('visible');
+            document.getElementById('resultArea').classList.remove('visible');
+            document.getElementById('logBox').innerHTML = '';
+
+            // Reset steps
+            for (let i = 1; i <= 5; i++) setStep(i, 'pending');
+
+            setBadge('در حال ارسال', 'warning');
+            setStep(1, 'active');
+            addLog('شروع فرآیند دانلود...', 'info');
+            addLog(`لینک: ${fileUrl}`, 'info');
+
+            try {
+                // Step 1: Trigger workflow
+                addLog('ارسال درخواست به GitHub Actions...', 'info');
+
+                const triggerRes = await fetch(
+                    `${API_BASE}/repos/${repo}/actions/workflows/${WORKFLOW_FILE}/dispatches`,
+                    {
+                        method: 'POST',
+                        headers: getHeaders(),
+                        body: JSON.stringify({
+                            ref: 'main',
+                            inputs: {
+                                file_url: fileUrl,
+                                file_name: fileName || '',
+                                split_enabled: splitFile ? 'true' : 'false',
+                            }
+                        })
+                    }
+                );
+
+                if (!triggerRes.ok) {
+                    const errData = await triggerRes.json().catch(() => ({}));
+                    let errMsg = `خطای HTTP ${triggerRes.status}`;
+                    if (triggerRes.status === 404) {
+                        errMsg = 'مخزن یا فایل workflow یافت نشد. مطمئن شوید فایل download.yml در مخزن وجود دارد.';
+                    } else if (triggerRes.status === 401 || triggerRes.status === 403) {
+                        errMsg = 'توکن نامعتبر یا دسترسی ناکافی. توکن باید دسترسی repo و workflow داشته باشد.';
+                    } else if (errData.message) {
+                        errMsg = errData.message;
+                    }
+                    throw new Error(errMsg);
+                }
+
+                setStep(1, 'done');
+                addLog('درخواست با موفقیت ارسال شد ✓', 'success');
+
+                // Step 2: Wait for workflow to appear
+                setStep(2, 'active');
+                setBadge('در صف اجرا', 'warning');
+                addLog('در انتظار شروع Workflow...', 'info');
+
+                state.startTime = Date.now();
+
+                // Wait a moment then find the run
+                await sleep(3000);
+
+                const runId = await findWorkflowRun(repo);
+                if (!runId) {
+                    throw new Error('Workflow اجرا نشد. لطفاً مخزن را بررسی کنید.');
+                }
+
+                state.runId = runId;
+                setStep(2, 'done');
+                addLog(`Workflow شناسایی شد: Run #${runId} ✓`, 'success');
+
+                // Step 3-5: Poll for completion
+                setStep(3, 'active');
+                setBadge('در حال دانلود', 'info');
+                addLog('شروع نظارت بر وضعیت...', 'info');
+
+                btn.innerHTML = '⏳ در حال اجرا...';
+                startPolling(repo, runId);
+
+            } catch (error) {
+                setStep(1, 'error');
+                setBadge('خطا', 'warning');
+                showError(error.message);
+                btn.disabled = false;
+                btn.innerHTML = '🚀 شروع دانلود';
+            }
+        }
+
+        // ===== FIND WORKFLOW RUN =====
+        async function findWorkflowRun(repo) {
+            const maxAttempts = 10;
+
+            for (let i = 0; i < maxAttempts; i++) {
+                try {
+                    const res = await fetch(
+                        `${API_BASE}/repos/${repo}/actions/workflows/${WORKFLOW_FILE}/runs?per_page=5&status=queued&status=in_progress`,
+                        { headers: getHeaders() }
+                    );
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.workflow_runs && data.workflow_runs.length > 0) {
+                            // Get the most recent run
+                            const run = data.workflow_runs.sort(
+                                (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                            )[0];
+
+                            // Check if it was created after we triggered
+                            const runTime = new Date(run.created_at).getTime();
+                            if (runTime >= state.startTime - 30000) {
+                                return run.id;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    addLog(`تلاش ${i + 1}: خطا در جستجوی Workflow`, 'warn');
+                }
+
+                await sleep(3000);
+            }
+
+            return null;
+        }
+
+        // ===== POLLING =====
+        function startPolling(repo, runId) {
+            state.polling = true;
+            pollStatus(repo, runId);
+        }
+
+        function stopPolling() {
+            state.polling = false;
+            if (state.pollTimer) {
+                clearTimeout(state.pollTimer);
+                state.pollTimer = null;
+            }
+        }
+
+        async function pollStatus(repo, runId) {
+            if (!state.polling) return;
+
+            try {
+                const res = await fetch(
+                    `${API_BASE}/repos/${repo}/actions/runs/${runId}`,
+                    { headers: getHeaders() }
+                );
+
+                if (!res.ok) {
+                    throw new Error(`خطا در دریافت وضعیت: HTTP ${res.status}`);
+                }
+
+                const run = await res.json();
+                const status = run.status;
+                const conclusion = run.conclusion;
+
+                const elapsed = formatTime(Date.now() - state.startTime);
+                addLog(`وضعیت: ${status} | نتیجه: ${conclusion || 'در حال اجرا'} | زمان: ${elapsed}`, 'info');
+
+                // Update steps based on status
+                updateStepsFromRun(run);
+
+                if (status === 'completed') {
+                    stopPolling();
+
+                    if (conclusion === 'success') {
+                        // All steps done
+                        for (let i = 3; i <= 5; i++) setStep(i, 'done');
+                        setBadge('موفق', 'success');
+                        addLog('Workflow با موفقیت تکمیل شد! ✓', 'success');
+
+                        // Get artifacts
+                        await fetchArtifacts(repo, runId);
+
+                    } else {
+                        setStep(getCurrentActiveStep(), 'error');
+                        setBadge('ناموفق', 'warning');
+                        showError(`Workflow با وضعیت "${conclusion}" به پایان رسید. لاگ‌های Actions را بررسی کنید.`);
+
+                        const btn = document.getElementById('startBtn');
+                        btn.disabled = false;
+                        btn.innerHTML = '🔄 تلاش مجدد';
+                    }
+                } else {
+                    // Continue polling
+                    state.pollTimer = setTimeout(() => pollStatus(repo, runId), POLL_INTERVAL);
+                }
+
+            } catch (error) {
+                addLog(`خطا در polling: ${error.message}`, 'error');
+                // Retry polling
+                state.pollTimer = setTimeout(() => pollStatus(repo, runId), POLL_INTERVAL);
+            }
+        }
+
+        function getCurrentActiveStep() {
+            for (let i = 5; i >= 3; i--) {
+                if (document.getElementById(`step${i}`).classList.contains('active')) {
+                    return i;
+                }
+            }
+            return 3;
+        }
+
+        function updateStepsFromRun(run) {
+            const elapsed = Date.now() - state.startTime;
+
+            // Simple heuristic based on elapsed time
+            if (elapsed > 15000) {
+                setStep(3, 'done');
+                setStep(4, 'active');
+                setBadge('پردازش', 'info');
+            }
+            if (elapsed > 30000) {
+                setStep(4, 'done');
+                setStep(5, 'active');
+                setBadge('آپلود', 'info');
+            }
+        }
+
+        // ===== FETCH ARTIFACTS =====
+        async function fetchArtifacts(repo, runId) {
+            addLog('دریافت لینک Artifact...', 'info');
+
+            try {
+                // Wait a bit for artifacts to be available
+                await sleep(5000);
+
+                const res = await fetch(
+                    `${API_BASE}/repos/${repo}/actions/runs/${runId}/artifacts`,
+                    { headers: getHeaders() }
+                );
+
+                if (!res.ok) {
+                    throw new Error(`خطا در دریافت artifacts: HTTP ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                if (!data.artifacts || data.artifacts.length === 0) {
+                    throw new Error('هیچ artifact یافت نشد. ممکن است فایل خیلی بزرگ بوده باشد.');
+                }
+
+                addLog(`${data.artifacts.length} artifact یافت شد ✓`, 'success');
+
+                // Show results
+                showResults(repo, data.artifacts);
+
+            } catch (error) {
+                showError(error.message);
+                const btn = document.getElementById('startBtn');
+                btn.disabled = false;
+                btn.innerHTML = '🔄 تلاش مجدد';
+            }
+        }
+
+        // ===== SHOW RESULTS =====
+        function showResults(repo, artifacts) {
+            const resultArea = document.getElementById('resultArea');
+            const resultLinks = document.getElementById('resultLinks');
+            const resultDesc = document.getElementById('resultDesc');
+
+            resultLinks.innerHTML = '';
+
+            let totalSize = 0;
+            artifacts.forEach(artifact => {
+                totalSize += artifact.size_in_bytes;
+
+                const sizeMB = (artifact.size_in_bytes / (1024 * 1024)).toFixed(1);
+                const downloadUrl = `${API_BASE}/repos/${repo}/actions/artifacts/${artifact.id}/zip`;
+
+                const link = document.createElement('a');
+                link.className = 'result-link';
+                link.href = '#';
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    downloadArtifact(repo, artifact.id, artifact.name);
+                };
+                link.innerHTML = `
+                    <span class="link-name">📦 ${artifact.name} (${sizeMB} MB)</span>
+                    <span class="link-icon">⬇️ دانلود</span>
+                `;
+                resultLinks.appendChild(link);
+            });
+
+            const totalMB = (totalSize / (1024 * 1024)).toFixed(1);
+            resultDesc.textContent = `${artifacts.length} فایل - مجموع: ${totalMB} مگابایت`;
+
+            resultArea.classList.add('visible');
+
+            const btn = document.getElementById('startBtn');
+            btn.disabled = false;
+            btn.innerHTML = '🚀 دانلود جدید';
+        }
+
+        // ===== DOWNLOAD ARTIFACT =====
+        async function downloadArtifact(repo, artifactId, name) {
+            addLog(`شروع دانلود artifact: ${name}`, 'info');
+
+            try {
+                const res = await fetch(
+                    `${API_BASE}/repos/${repo}/actions/artifacts/${artifactId}/zip`,
+                    {
+                        headers: getHeaders(),
+                        redirect: 'follow'
+                    }
+                );
+
+                if (!res.ok) {
+                    throw new Error(`خطا در دانلود: HTTP ${res.status}`);
+                }
+
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${name}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                addLog(`دانلود ${name} شروع شد ✓`, 'success');
+
+            } catch (error) {
+                showError(`خطا در دانلود artifact: ${error.message}`);
+            }
+        }
+
+        // ===== UTILITIES =====
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function formatTime(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            if (minutes > 0) {
+                return `${minutes} دقیقه و ${secs} ثانیه`;
+            }
+            return `${secs} ثانیه`;
+        }
     </script>
 </body>
 </html>
